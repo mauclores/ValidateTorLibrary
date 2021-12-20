@@ -1,37 +1,76 @@
-plugins {
-  id 'com.android.library'
-}
+apply from: '../config/android/library.gradle'
+apply from: '../config/documentation/dokka/android.gradle'
+
+apply plugin: "kotlin-android"
 
 android {
-  compileSdkVersion rootProject.ext.compileSdkVersion
-  buildToolsVersion rootProject.ext.buildToolsVersion
-
   defaultConfig {
-    minSdkVersion rootProject.ext.minSdkVersion
-    targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode rootProject.ext.libVersionCode
-    versionName rootProject.ext.libVersionName
+    versionName version
+    consumerProguardFiles 'proguard-rules.pro'
+  }
 
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    consumerProguardFiles "consumer-rules.pro"
+  sourceSets.each {
+    it.java.srcDirs += "src/$it.name/kotlin"
+  }
+
+  compileOptions {
+    // Source code java level(Source code of this project).
+    sourceCompatibility JavaVersion.VERSION_1_8
+    // Target JVM level(JVM on Android devices).
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  testOptions {
+    unitTests {
+      returnDefaultValues = true
+      includeAndroidResources = true
+    }
+  }
+
+  dexOptions {
+    javaMaxHeapSize = 6g
+    maxProcessCount = 8
+    threadCount = 8
   }
 
   buildTypes {
     release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+}
+
+import com.android.build.gradle.internal.tasks.PrepareLintJar
+tasks.whenTaskAdded { task ->
+  switch (task) {
+    case PrepareLintJar:
+      task.dependsOn ":${project.name}:reformatJavaSources"
+      break
+  }
+}
+
+apply from: '../config/publish/android.gradle'
+afterEvaluate {
+  publishing {
+    publications {
+      validatetor(MavenPublication, androidArtifact())
+    }
+  }
+}
+
+apply from: '../config/publish/maven-central.gradle'
+
+dokka {
+  configuration {
+    sourceRoot {
+      path = "validatetor/src/main"
+    }
   }
 }
 
 dependencies {
 
-  implementation "com.android.support:appcompat-v7:$supportLibVersion"
-  testImplementation "junit:junit:$rootProject.ext.junitVersion"
+  testImplementation "junit:junit:4.13.2"
   androidTestImplementation 'com.android.support.test:runner:1.0.2'
   androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

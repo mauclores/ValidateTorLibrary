@@ -23,11 +23,11 @@
 package com.raywenderlich.android.validatetorproject
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import android.widget.EditText
 import android.widget.Toast
 import com.raywenderlich.android.validatetor.ValidateTor
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,10 +41,11 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun setUpUiWidgets() {
-    btn_validate.setOnClickListener {
-      validateEmailField(edt_email)
-      validatePasswordField(edt_password)
-      validateCreditCardField(edt_creditcard)
+    val btnValidate = findViewById<Button>(R.id.btn_validate)
+    btnValidate.setOnClickListener {
+      validateEmailField(findViewById(R.id.edt_email))
+      validatePasswordField(findViewById(R.id.edt_password))
+      validateCreditCardField(findViewById(R.id.edt_creditcard))
     }
   }
 

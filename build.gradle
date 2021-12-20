@@ -1,44 +1,68 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-  ext.kotlin_version = '1.2.21'
+  ext.dokka_version = '0.10.0'
+  // Build Config.
+  apply from: 'config/index.gradle'
+
+  CONFIG.versions.android.sdk.min = 23
+  CONFIG.versions.android.sdk.target = 31
+  CONFIG.versions.android.sdk.compile = 31
+  CONFIG.versions.kotlin = '1.4.31'
+
   repositories {
     google()
     jcenter()
+    mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:3.0.1'
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    classpath "com.android.tools.build:gradle:$CONFIG.versions.android.plugin"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$CONFIG.versions.kotlin"
+    classpath 'pl.allegro.tech.build:axion-release-plugin:1.10.2'
+    classpath 'com.github.ben-manes:gradle-versions-plugin:0.27.0'
+    classpath "org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}"
 
     // NOTE: Do not place your application dependencies here; they belong
     // in the individual module build.gradle files
   }
 }
 
-allprojects {
+allprojects { proj ->
   repositories {
     google()
-    jcenter()
+    mavenCentral()
+    jitpack()
   }
+
+  gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+      options.encoding = 'UTF-8'
+      options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
+    }
+  }
+  apply plugin: 'pl.allegro.tech.build.axion-release'
+  scmVersion {
+    useHighestVersion = true
+    tag {
+      prefix = 'v'
+      versionSeparator = ''
+      versionIncrementer 'incrementMinor'
+    }
+  }
+
+  proj.version = scmVersion.version
+
+  apply plugin: 'com.github.ben-manes.versions'
 }
 
-task clean(type: Delete) {
-  delete rootProject.buildDir
+tasks.withType(Test) {
+  maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+  forkEvery = 100
+  reports.html.enabled = false
+  reports.junitXml.enabled = false
 }
 
-ext {
-  // Project
-  targetSdkVersion = 27
-  minSdkVersion = 14
-  compileSdkVersion = targetSdkVersion
-  buildToolsVersion = '27.0.3'
-  supportLibVersion = '27.0.2'
-  constraintLayoutVersion = "1.0.2"
-  junitVersion = "4.12"
-  testRunnerVersion = "1.0.1"
-  espressoCoreVersion = "3.0.1"
-
-  // ValidateTor library info
-  libVersionCode = 1
-  libVersionName = '1.0.0'
+tasks.withType(JavaCompile) {
+  options.fork = true
+  options.incremental = true
 }

@@ -10,13 +10,10 @@
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
 
-    <!-- Main Activity -->
-    <activity android:name=".MainActivity"/>
-
-    <!-- Splash Activity -->
     <activity
-        android:name=".SplashActivity"
-        android:theme="@style/AppTheme.FullScreen">
+        android:name=".MainActivity"
+        android:theme="@style/AppTheme"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
