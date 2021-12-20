@@ -8,6 +8,14 @@ workflows:
     - setup_env
     steps:
     - script@1:
+        title: Download Dependencies
+        inputs:
+        - content: ./gradlew androidDependencies
+    - script@1:
+        title: Run Check
+        inputs:
+        - content: ./gradlew check
+    - script@1:
         title: Assemble
         inputs:
         - content: ./gradlew assemble
