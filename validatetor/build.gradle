@@ -40,15 +40,6 @@ android {
   }
 }
 
-import com.android.build.gradle.internal.tasks.PrepareLintJar
-tasks.whenTaskAdded { task ->
-  switch (task) {
-    case PrepareLintJar:
-      task.dependsOn ":${project.name}:reformatJavaSources"
-      break
-  }
-}
-
 apply from: '../config/publish/android.gradle'
 afterEvaluate {
   publishing {
@@ -58,6 +49,11 @@ afterEvaluate {
   }
 }
 
+//def isSnapshot = project.version.contains('-')
+//if (isSnapshot) {
+//  ext["MAVEN_CENTRAL_IS_SNAPSHOT"] = true
+//}
+ext["MAVEN_CENTRAL_IS_SNAPSHOT"] = true
 apply from: '../config/publish/maven-central.gradle'
 
 dokka {
