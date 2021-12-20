@@ -47,10 +47,10 @@ workflows:
     - git-clone@6:
         inputs:
         - update_submodules: 'yes'
-    - script@1:
-        title: Init submodules
-        inputs:
-        - content: git submodule update --init
+    # - script@1:
+    #     title: Init submodules
+    #     inputs:
+    #     - content: git submodule update --init
 
 meta:
   bitrise.io:
@@ -68,3 +68,6 @@ app:
   - opts:
       is_expand: false
     PROJECT_LOCATION: "."
+  - opts:
+      is_expand: false
+    SDK_PATH: validatetor
