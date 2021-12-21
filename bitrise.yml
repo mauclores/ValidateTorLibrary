@@ -8,32 +8,28 @@ workflows:
     - setup_env
     steps:
     - script@1:
-        title: Bitrise dir
+        title: Download Dependencies
         inputs:
-        - content: echo "$BITRISE_SOURCE_DIR"
-    # - script@1:
-    #     title: Download Dependencies
-    #     inputs:
-    #     - content: ./gradlew androidDependencies
-    # - script@1:
-    #     title: Run Check
-    #     inputs:
-    #     - content: ./gradlew check
-    # - script@1:
-    #     title: Assemble
-    #     inputs:
-    #     - content: ./gradlew assemble
-    # - script@1:
-    #     title: Retrieve Base64 PGP Key and save to file
-    #     inputs:
-    #     - content: |-
-    #         if [[ "$RELEASE_PGP_KEY_BASE64" != "" ]]; then
-    #           base64 -d <<< "$RELEASE_PGP_KEY_BASE64" > ./maven-central-key.gpg
-    #         fi
-    # - script@1:
-    #     title: Publish
-    #     inputs:
-    #     - content: ./gradlew publish
+        - content: ./gradlew androidDependencies
+    - script@1:
+        title: Run Check
+        inputs:
+        - content: ./gradlew check
+    - script@1:
+        title: Assemble
+        inputs:
+        - content: ./gradlew assemble
+    - script@1:
+        title: Retrieve Base64 PGP Key and save to file
+        inputs:
+        - content: |-
+            if [[ "$RELEASE_PGP_KEY_BASE64" != "" ]]; then
+              base64 -d <<< "$RELEASE_PGP_KEY_BASE64" > ./maven-central-key.gpg
+            fi
+    - script@1:
+        title: Publish
+        inputs:
+        - content: ./gradlew publish
   
   setup_env:
     steps:
