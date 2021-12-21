@@ -22,10 +22,9 @@ workflows:
     - script@1:
         title: Retrieve Base64 PGP Key and save to file
         inputs:
-        #TODO: Fix hardcoded path
         - content: |-
             if [[ "$RELEASE_PGP_KEY_BASE64" != "" ]]; then
-              base64 -d <<< "$RELEASE_PGP_KEY_BASE64" > /bitrise/src/validatetor/maven-central-key.gpg
+              base64 -d <<< "$RELEASE_PGP_KEY_BASE64" > ./maven-central-key.gpg
             fi
     - script@1:
         title: Publish
