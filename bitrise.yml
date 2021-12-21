@@ -22,6 +22,7 @@ workflows:
     - script@1:
         title: Retrieve Base64 PGP Key and save to file
         inputs:
+        #TODO: Fix hardcoded path
         - content: |-
             if [[ "$RELEASE_PGP_KEY_BASE64" != "" ]]; then
               base64 -d <<< "$RELEASE_PGP_KEY_BASE64" > /bitrise/src/validatetor/maven-central-key.gpg
@@ -42,15 +43,9 @@ workflows:
             sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
             export JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64'
             envman add --key JAVA_HOME --value '/usr/lib/jvm/java-8-openjdk-amd64'
-    - activate-ssh-key@4:
-        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
     - git-clone@6:
         inputs:
         - update_submodules: 'yes'
-    # - script@1:
-    #     title: Init submodules
-    #     inputs:
-    #     - content: git submodule update --init
 
 meta:
   bitrise.io:
