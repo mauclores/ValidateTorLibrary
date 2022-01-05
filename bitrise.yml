@@ -50,6 +50,8 @@ trigger_map:
   workflow: publish
 - pull_request_source_branch: "*"
   workflow: publish
+- tag: "v*.*.*"
+  workflow: publish
 
 app:
   envs:
