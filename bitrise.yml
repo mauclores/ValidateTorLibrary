@@ -4,6 +4,7 @@ project_type: android
 
 workflows:
   publish:
+    run_if: "{{ not (not .IsPR | and (getenv GIT_CLONE_COMMIT | eq “”)) }}"
     before_run:
     - setup_env
     steps:
