@@ -4,7 +4,6 @@ project_type: android
 
 workflows:
   publish:
-    run_if: "{{ not (not .IsPR | and (getenv GIT_CLONE_COMMIT | eq “”)) }}"
     before_run:
     - setup_env
     steps:
@@ -28,6 +27,17 @@ workflows:
               base64 -d <<< "$RELEASE_PGP_KEY_BASE64" > /bitrise/src/validatetor/maven-central-key.gpg
             fi
     - script@1:
+        title: Check if build is manual
+        inputs:
+        - content: |
+            #!/usr/bin/env bash
+            if [[ !$PR && $BITRISE_GIT_MESSAGE == "" ]]; then
+                envman add --key IS_BUILD_MANUAL --value "true"
+            else
+                envman add --key IS_BUILD_MANUAL --value "false"
+            fi
+    - script@1:
+        run_if: "{{ enveq "IS_BUILD_MANUAL" "false" }}"
         title: Publish
         inputs:
         - content: ./gradlew publish
